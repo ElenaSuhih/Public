@@ -1,0 +1,93 @@
+error = 'перезвпустите программу, Вы ввели что-то не то'
+row = input ('Введите целые числа через пробел: ') #запрос последовательности
+randnum = int(input('Введите число: ')) #запрос числа
+
+def check(str):    # проверяем ввод
+    str = str.replace(' ', '')
+    try:
+        int(str)
+        return True
+    except ValueError:
+        return False
+
+if " " not in row:
+    print("\nВы неправильно ввели последовательность чисел")
+    row = input('Введите целые числа через пробел: ')
+if not check(row):
+    print('\nопять что-то не так\n')
+    print(error)
+else:
+    row = row.split()
+
+row_n = [int(item) for item in row] # делаем список чисел
+print(row_n)
+
+def sort_num(N):
+    if len(N)<2:
+        return N[:]
+    else:
+        middle = len(N) // 2
+        left = sort_num(N[:middle])
+        right = sort_num(N[middle:])
+        return sorting(left, right)
+
+def sorting(left,right):
+    result = []
+    i, j = 0, 0
+
+    while i < len(left) and j < len(right):
+        if left[i] < right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+
+    while i < len(left):
+        result.append(left[i])
+        i += 1
+
+    while j < len(right):
+        result.append(right[j])
+        j += 1
+    return result
+
+row_num=sort_num(row_n)
+
+def binary_search(array, element, left, right): # функция для поиска позиции
+    try:
+        if left > right:
+            return False
+        middle = (right + left) // 2
+        if array[middle] == element:
+            return middle
+        elif element < array[middle]:
+            return binary_search(array, element, left, middle - 1)
+        else:
+            return binary_search(array, element, middle + 1, right)
+    except IndexError:
+        return 'Число меньше, введите другое'
+
+print(f'Упорядоченный список: {row_num}')
+
+if not binary_search(row_num, randnum, 0, len(row_num)):
+    rI = min(row_num, key=lambda x: (abs(x - randnum), x))
+    ind = row_num.index(rI)
+    max_ind = ind + 1
+    min_ind = ind - 1
+    if rI < randnum:
+        print(f'''В списке нет введенного элемента 
+Ближайший меньший элемент: {rI}, его индекс: {ind}
+Ближайший больший элемент: {row_num[max_ind]} его индекс: {max_ind}''')
+    elif min_ind < 0:
+        print(f'''В списке нет введенного элемента
+Ближайший больший элемент: {rI}, его индекс: {row_num.index(rI)}
+В списке нет меньшего элемента''')
+    elif rI > randnum:
+        print(f'''В списке нет введенного элемента
+Ближайший больший элемент: {rI}, его индекс: {row_num.index(rI)}
+Ближайший меньший элемент: {row_num[min_ind]} его индекс: {min_ind}''')
+    elif row_num.index(rI) == 0:
+        print(f'Индекс введенного элемента: {row_num.index(rI)}')
+else:
+    print(f'Индекс введенного элемента: {binary_search(row_num, randnum, 0, len(row_num))}')
